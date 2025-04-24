@@ -1,0 +1,22 @@
+{
+    "name": "@pewresearch/prc-art-direction",
+    "version": "1.0.0",
+    "description": "Provides a module for PRC Platform that allows editors to select multiple images and apply them to the post, then Story Item blocks can use the various images in different layout contexts.",
+    "scripts": {
+        "build": "wp-scripts build",
+        "test": "wp-scripts test-playwright",
+        "test:env:start": "wp-env start",
+        "test:env:stop": "wp-env stop",
+        "test:env:clean": "wp-env clean all && wp-env start",
+        "test:env:destroy": "wp-env destroy"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.51.1",
+        "@wordpress/e2e-test-utils-playwright": "^1.22.0",
+        "@wordpress/env": "^10.22.0",
+        "@wordpress/scripts": "^30.15.0"
+    },
+    "dependencies": {
+        "@wordpress/icons": "^10.22.0"
+    }
+}
