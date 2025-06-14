@@ -319,7 +319,7 @@ class Plugin {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    PRC\Platform\XXX\Loader
+	 * @return    PRC\Platform\Art_Direction\Loader
 	 */
 	public function get_loader() {
 		return $this->loader;

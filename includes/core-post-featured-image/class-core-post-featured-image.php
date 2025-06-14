@@ -87,9 +87,9 @@ class Core_Post_Featured_Image {
 	public function register_assets() {
 		$asset_file = include plugin_dir_path( __FILE__ ) . 'build/index.asset.php';
 
-		$script_src       = PRC_ART_DIRECTION_DIR . '/includes/core-post-featured-image/build/index.js';
-		$style_src        = PRC_ART_DIRECTION_DIR . '/includes/core-post-featured-image/build/style-index.css';
-		$editor_style_src = PRC_ART_DIRECTION_DIR . '/includes/core-post-featured-image/build/index.css';
+		$script_src       = PRC_ART_DIRECTION_URL . 'includes/core-post-featured-image/build/index.js';
+		$style_src        = PRC_ART_DIRECTION_URL . 'includes/core-post-featured-image/build/style-index.css';
+		$editor_style_src = PRC_ART_DIRECTION_URL . 'includes/core-post-featured-image/build/index.css';
 
 		$script = wp_register_script(
 			'prc-art-direction-core-post-featured-image',

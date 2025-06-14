@@ -143,22 +143,25 @@ const useArtDirectionContext = () => {
 			console.log('Featured Image: ', debouncedArtDirection.A1);
 		}
 		// Check if debouncedArtDirection is different from meta.artDirection, by going through each object and it's properties and making sure they are the same.
+		console.log(
+			'ART DIRECTION DIFF CHECK:',
+			JSON.stringify(debouncedArtDirection),
+			JSON.stringify(meta.artDirection)
+		);
 		if (
 			JSON.stringify(debouncedArtDirection) !==
 			JSON.stringify(meta.artDirection)
 		) {
 			// console.clear();
-			console.log(
-				'Art Direction Change Detected',
-				debouncedArtDirection,
-				meta
-			);
+			console.log('Art Direction Change Detected', {
+				update: debouncedArtDirection,
+				current: meta.artDirection,
+			});
 		} else {
-			console.log(
-				'No Art Direction Change Detected',
-				debouncedArtDirection,
-				meta.artDirection
-			);
+			console.log('No Art Direction Change Detected', {
+				update: debouncedArtDirection,
+				current: meta.artDirection,
+			});
 			return;
 		}
 		console.log('ART DIRECTION UPDATE: ', debouncedArtDirection, meta);
@@ -176,6 +179,7 @@ const useArtDirectionContext = () => {
 	const toggleImageSlotBordered = (size) => {
 		let newArtDirection = { ...artDirection };
 		newArtDirection = propagateBorderedToggle(newArtDirection, size);
+		setMeta({ ...meta, artDirection: newArtDirection });
 		setArtDirection({ ...newArtDirection });
 	};
 

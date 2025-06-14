@@ -34,6 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'PRC_ART_DIRECTION_FILE', __FILE__ );
 define( 'PRC_ART_DIRECTION_DIR', __DIR__ );
+define( 'PRC_ART_DIRECTION_URL', plugin_dir_url( __FILE__ ) );
 define( 'PRC_ART_DIRECTION_VERSION', '1.0.0' );
 
 /**
