@@ -37,8 +37,8 @@ class Inspector_Sidebar_Panel {
 	public function register_block_plugin_assets() {
 		$asset_file = include plugin_dir_path( __FILE__ ) . 'build/index.asset.php';
 		$asset_slug = self::$handle;
-		$script_src = PRC_ART_DIRECTION_DIR . '/includes/inspector-sidebar-panel/build/index.js';
-		$style_src  = PRC_ART_DIRECTION_DIR . '/includes/inspector-sidebar-panel/build/style-index.css';
+		$script_src = PRC_ART_DIRECTION_URL . '/includes/inspector-sidebar-panel/build/index.js';
+		$style_src  = PRC_ART_DIRECTION_URL . '/includes/inspector-sidebar-panel/build/style-index.css';
 
 		$script = wp_register_script(
 			$asset_slug,
@@ -53,6 +53,17 @@ class Inspector_Sidebar_Panel {
 			$style_src,
 			array(),
 			$asset_file['version']
+		);
+
+		do_action(
+			'qm/debug',
+			'Art Direction Asset Registration:' . print_r(
+				array(
+					'script' => $script,
+					'style'  => $style,
+				),
+				true
+			)
 		);
 
 		if ( ! $script || ! $style ) {
@@ -71,7 +82,8 @@ class Inspector_Sidebar_Panel {
 		if ( ! $screen_post_type || ! in_array( $screen_post_type, Plugin::get_enabled_post_types(), true ) ) {
 			return;
 		}
-		if ( is_admin() && ! is_wp_error( $registered ) ) {
+		if ( ! is_wp_error( $registered ) ) {
+			do_action( 'qm/debug', 'Enqueuing Art Direction Inspector Sidebar Panel Assets' );
 			wp_enqueue_script( self::$handle );
 			wp_enqueue_style( self::$handle );
 		}

@@ -2,7 +2,6 @@
 /**
  * WordPress Dependencies
  */
-import { Fragment } from '@wordpress/element';
 import { Flex, FlexBlock, ExternalLink } from '@wordpress/components';
 
 /**
@@ -36,7 +35,7 @@ export default function ArtDirectionList() {
 			</p>
 			<Slot size="A1" />
 			{hasA1Image && (
-				<Fragment>
+				<>
 					<Slot size="A2" />
 					<Flex>
 						<FlexBlock>
@@ -67,7 +66,7 @@ export default function ArtDirectionList() {
 							<Slot size="twitter" />
 						</FlexBlock>
 					</Flex>
-				</Fragment>
+				</>
 			)}
 		</div>
 	);

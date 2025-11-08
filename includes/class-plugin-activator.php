@@ -7,9 +7,8 @@
  * @since      1.0.0
  * @package    PRC\Platform\Art_Direction
  */
-namespace PRC\Platform\Art_Direction;
 
-use DEFAULT_TECHNICAL_CONTACT;
+namespace PRC\Platform\Art_Direction;
 
 /**
  * Fired during plugin activation.

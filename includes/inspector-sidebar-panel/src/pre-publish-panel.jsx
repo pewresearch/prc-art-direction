@@ -1,7 +1,7 @@
 /**
  * WordPress Dependencies
  */
-import { PluginPrePublishPanel } from '@wordpress/edit-post';
+import { PluginPrePublishPanel } from '@wordpress/editor';
 
 /**
  * Internal Dependencies

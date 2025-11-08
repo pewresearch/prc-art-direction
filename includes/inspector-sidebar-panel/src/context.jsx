@@ -143,28 +143,28 @@ const useArtDirectionContext = () => {
 			console.log('Featured Image: ', debouncedArtDirection.A1);
 		}
 		// Check if debouncedArtDirection is different from meta.artDirection, by going through each object and it's properties and making sure they are the same.
-		console.log(
-			'ART DIRECTION DIFF CHECK:',
-			JSON.stringify(debouncedArtDirection),
-			JSON.stringify(meta.artDirection)
-		);
+		// console.log(
+		// 	'ART DIRECTION DIFF CHECK:',
+		// 	JSON.stringify(debouncedArtDirection),
+		// 	JSON.stringify(meta.artDirection)
+		// );
 		if (
 			JSON.stringify(debouncedArtDirection) !==
 			JSON.stringify(meta.artDirection)
 		) {
 			// console.clear();
-			console.log('Art Direction Change Detected', {
-				update: debouncedArtDirection,
-				current: meta.artDirection,
-			});
+			// console.log('Art Direction Change Detected', {
+			// 	update: debouncedArtDirection,
+			// 	current: meta.artDirection,
+			// });
 		} else {
-			console.log('No Art Direction Change Detected', {
-				update: debouncedArtDirection,
-				current: meta.artDirection,
-			});
+			// console.log('No Art Direction Change Detected', {
+			// 	update: debouncedArtDirection,
+			// 	current: meta.artDirection,
+			// });
 			return;
 		}
-		console.log('ART DIRECTION UPDATE: ', debouncedArtDirection, meta);
+		// console.log('ART DIRECTION UPDATE: ', debouncedArtDirection, meta);
 		setMeta({
 			...meta,
 			artDirection: debouncedArtDirection,
@@ -222,7 +222,7 @@ const useArtDirectionContext = () => {
 				return false;
 			}
 		}
-		console.log('allSlotsTheSame...', 'all the same');
+		// console.log('allSlotsTheSame...', 'all the same');
 		return true;
 	}, [debouncedArtDirection]);
 
