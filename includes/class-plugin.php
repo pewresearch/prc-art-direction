@@ -269,6 +269,9 @@ class Plugin {
 		if ( false === $art ) {
 			return $img;
 		}
+		if ( ! array_key_exists( 'url', $art ) ) {
+			return $img;
+		}
 		return $art['url'];
 	}
 
@@ -290,6 +293,9 @@ class Plugin {
 		$api = new API( $post->ID );
 		$art = $api->get( 'twitter' );
 		if ( false === $art ) {
+			return $img;
+		}
+		if ( ! array_key_exists( 'url', $art ) ) {
 			return $img;
 		}
 		return $art['url'];
