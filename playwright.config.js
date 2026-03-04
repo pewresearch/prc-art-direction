@@ -1,12 +1,10 @@
 import { defineConfig } from '@playwright/test';
 import baseConfig from '@wordpress/scripts/config/playwright.config';
 
-const testDir = './tests';
-
 export default defineConfig({
 	...baseConfig,
-	testDir,
-	outputDir: './tests/artifacts',
+	testDir: './tests',
+	outputDir: './tests/artifacts/results',
 	use: {
 		...baseConfig.use,
 		video: 'on',

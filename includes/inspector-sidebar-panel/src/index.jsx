@@ -10,7 +10,7 @@ import domReady from '@wordpress/dom-ready';
 import './style.scss';
 import InspectorSidebar from './inspector-sidebar';
 import PrePublishPanel from './pre-publish-panel';
-import renderAttachmentsPanelHook from './attachments-panel-hook';
+import renderPanelHook, {socialPanelHook} from './genera-panel-hook';
 
 function renderArtDirectionPlugin() {
 	return () => (
@@ -33,7 +33,13 @@ domReady(() => {
 	addFilter(
 		'prc-platform.attachments-panel',
 		'prc-platform/art-direction',
-		renderAttachmentsPanelHook
+		renderPanelHook
+	);
+	// Add Art Direction options to our seo panel plugin.
+	addFilter(
+		'prc-platform.seo.ui.social',
+		'prc-platform/art-direction',
+		socialPanelHook,
 	);
 });
 

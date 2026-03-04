@@ -36,10 +36,10 @@ class API {
 		if ( ! is_int( $this->post_id ) ) {
 			return;
 		}
-		
+
 		// Get the post type.
 		$post_type = get_post_type( $this->post_id );
-		
+
 		// Quick check to make sure we're only utilizing this on allowed post types.
 		if ( ! in_array( $post_type, Plugin::get_enabled_post_types() ) ) {
 			return;
@@ -50,7 +50,7 @@ class API {
 		if ( 0 !== $parent_post_id ) {
 			$this->post_id = $parent_post_id;
 		}
-		
+
 		// Check for new post meta key artDirection.
 		$all_art = get_post_meta( $this->post_id, Plugin::$post_meta_key, true );
 		if ( ! $all_art ) {
@@ -97,13 +97,12 @@ class API {
 		}
 		$full = wp_get_attachment_image_src( $post_thumbnail_id, 'full' );
 		return array(
-			'A1'       => $this->get_fallback_img( $post_thumbnail_id, 'A1', $full ),
-			'A2'       => $this->get_fallback_img( $post_thumbnail_id, 'A2', $full ),
-			'A3'       => $this->get_fallback_img( $post_thumbnail_id, 'A3', $full ),
-			'A4'       => $this->get_fallback_img( $post_thumbnail_id, 'A4', $full ),
-			'XL'       => $this->get_fallback_img( $post_thumbnail_id, 'XL', $full ),
-			'facebook' => $this->get_fallback_img( $post_thumbnail_id, 'facebook', $full ),
-			'twitter'  => $this->get_fallback_img( $post_thumbnail_id, 'twitter', $full ),
+			'A1'     => $this->get_fallback_img( $post_thumbnail_id, 'A1', $full ),
+			'A2'     => $this->get_fallback_img( $post_thumbnail_id, 'A2', $full ),
+			'A3'     => $this->get_fallback_img( $post_thumbnail_id, 'A3', $full ),
+			'A4'     => $this->get_fallback_img( $post_thumbnail_id, 'A4', $full ),
+			'XL'     => $this->get_fallback_img( $post_thumbnail_id, 'XL', $full ),
+			'social' => $this->get_fallback_img( $post_thumbnail_id, 'social', $full ),
 		);
 	}
 
@@ -119,21 +118,35 @@ class API {
 	/**
 	 * Gets art direction asset(s) for a post.
 	 *
-	 * @param string $size either 'all', 'A1', 'A2', 'A3', 'A4', 'XL', 'facebook', or 'twitter' (default: 'all').
+	 * @param string $size either 'all', 'A1', 'A2', 'A3', 'A4', 'XL', or 'social' (default: 'all').
 	 * @return array|false Returns the art direction data or false if the size is not allowed or no data is found.
 	 */
 	public function get( $size = 'all' ) {
 		// Check the size being retrieved is allowed.
-		if ( ! in_array( $size, array( 'all', 'A1', 'A2', 'A3', 'A4', 'XL', 'facebook', 'twitter' ) ) ) {
+		if ( ! in_array( $size, array( 'all', 'A1', 'A2', 'A3', 'A4', 'XL', 'social' ) ) ) {
 			return;
 		}
 
 		if ( 'all' === $size ) {
 			return $this->art_direction_data;
-		} elseif ( is_array( $this->art_direction_data ) && array_key_exists( $size, $this->art_direction_data ) ) {
-			return $this->art_direction_data[ $size ];
-		} else {
-			return false;
+		} elseif ( is_array( $this->art_direction_data ) ) {
+			// Handle 'social' size with backwards compatibility for legacy 'facebook' data.
+			if ( 'social' === $size ) {
+				if ( array_key_exists( 'social', $this->art_direction_data ) ) {
+					return $this->art_direction_data['social'];
+				}
+				// Fallback to legacy 'facebook' key if 'social' doesn't exist.
+				if ( array_key_exists( 'facebook', $this->art_direction_data ) ) {
+					return $this->art_direction_data['facebook'];
+				}
+				return false;
+			}
+
+			if ( array_key_exists( $size, $this->art_direction_data ) ) {
+				return $this->art_direction_data[ $size ];
+			}
 		}
+
+		return false;
 	}
 }

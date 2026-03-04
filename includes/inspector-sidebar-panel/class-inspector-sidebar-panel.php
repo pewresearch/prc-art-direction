@@ -37,8 +37,8 @@ class Inspector_Sidebar_Panel {
 	public function register_block_plugin_assets() {
 		$asset_file = include plugin_dir_path( __FILE__ ) . 'build/index.asset.php';
 		$asset_slug = self::$handle;
-		$script_src = PRC_ART_DIRECTION_URL . '/includes/inspector-sidebar-panel/build/index.js';
-		$style_src  = PRC_ART_DIRECTION_URL . '/includes/inspector-sidebar-panel/build/style-index.css';
+		$script_src = PRC_ART_DIRECTION_URL . 'includes/inspector-sidebar-panel/build/index.js';
+		$style_src  = PRC_ART_DIRECTION_URL . 'includes/inspector-sidebar-panel/build/style-index.css';
 
 		$script = wp_register_script(
 			$asset_slug,

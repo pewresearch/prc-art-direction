@@ -85,38 +85,34 @@ class Plugin {
 	);
 	/**
 	 * Schema for pewresearch.org art direction.
-	 * A1, A2, A3, A4, facebook, and twitter are all specific contexts that appear in our blocks and themes. They are not arbitrary. Your mileage may vary.
+	 * A1, A2, A3, A4, XL, social, and instagram are all specific contexts that appear in our blocks and themes. They are not arbitrary. Your mileage may vary.
 	 *
 	 * @var (string|(string|null)[][])[]|(string|(string|null)[][]|(string[]|(string|false)[])[][][])[]
 	 */
 	public static $field_schema = array(
 		'type'       => 'object',
 		'properties' => array(
-			'A1'       => array(
+			'A1'        => array(
 				'type'       => 'object',
 				'properties' => null,
 			),
-			'A2'       => array(
+			'A2'        => array(
 				'type'       => 'object',
 				'properties' => null,
 			),
-			'A3'       => array(
+			'A3'        => array(
 				'type'       => 'object',
 				'properties' => null,
 			),
-			'A4'       => array(
+			'A4'        => array(
 				'type'       => 'object',
 				'properties' => null,
 			),
-			'XL'       => array(
+			'XL'        => array(
 				'type'       => 'object',
 				'properties' => null,
 			),
-			'facebook' => array(
-				'type'       => 'object',
-				'properties' => null,
-			),
-			'twitter'  => array(
+			'social'    => array(
 				'type'       => 'object',
 				'properties' => null,
 			),
@@ -162,8 +158,19 @@ class Plugin {
 
 		require_once plugin_dir_path( __DIR__ ) . '/includes/class-api.php';
 		require_once plugin_dir_path( __DIR__ ) . '/includes/class-rest-api.php';
+		require_once plugin_dir_path( __DIR__ ) . '/includes/class-cli.php';
+		require_once plugin_dir_path( __DIR__ ) . '/includes/class-distributor.php';
 		require_once plugin_dir_path( __DIR__ ) . '/includes/inspector-sidebar-panel/class-inspector-sidebar-panel.php';
 		require_once plugin_dir_path( __DIR__ ) . '/includes/core-post-featured-image/class-core-post-featured-image.php';
+	}
+
+	/**
+	 * Register default post type support for art direction.
+	 *
+	 * @hook init
+	 */
+	public function register_default_post_type_support() {
+		add_post_type_support( 'post', 'prc-art-direction' );
 	}
 
 	/**
@@ -173,7 +180,19 @@ class Plugin {
 	 * @return string[]
 	 */
 	public static function get_enabled_post_types() {
-		return apply_filters( 'prc_platform__art_direction_enabled_post_types', array( 'post' ) );
+		$post_types         = get_post_types( array( 'public' => true ), 'names' );
+		$supported_types    = array_values(
+			array_filter(
+				$post_types,
+				function ( $pt ) {
+					return post_type_supports( $pt, 'prc-art-direction' );
+				}
+			)
+		);
+		// Maintain backward compatibility with filter.
+		$filter_types       = apply_filters( 'prc_platform__art_direction_enabled_post_types', array() );
+		$enabled_post_types = array_unique( array_merge( $supported_types, $filter_types ) );
+		return array_values( $enabled_post_types );
 	}
 
 	/**
@@ -183,6 +202,7 @@ class Plugin {
 	 * @access   private
 	 */
 	private function init_dependencies() {
+		$this->loader->add_action( 'init', $this, 'register_default_post_type_support', 5 );
 		$this->loader->add_action( 'init', $this, 'register_post_meta' );
 		$this->loader->add_filter( 'register_post_type_args', $this, 'change_featured_image_label', 100, 2 );
 		$this->loader->add_filter( 'wpseo_opengraph_image', $this, 'filter_facebook_image', 10, 1 );
@@ -191,6 +211,7 @@ class Plugin {
 		new Rest_API( $this->loader );
 		new Inspector_Sidebar_Panel( $this->loader );
 		new Core_Post_Featured_Image( $this->loader );
+		new Distributor( $this->loader );
 	}
 
 	/**
@@ -201,6 +222,8 @@ class Plugin {
 	 */
 	public function register_post_meta() {
 		// Register artDirection post meta for each enabled post type.
+		// Note: show_in_rest is intentionally omitted because we use a custom REST field
+		// with get_callback and update_callback in the Rest_API class for better control.
 		foreach ( self::get_enabled_post_types() as $post_type ) {
 			register_post_meta(
 				$post_type,
@@ -208,9 +231,6 @@ class Plugin {
 				array(
 					'single'        => true,
 					'type'          => 'object',
-					'show_in_rest'  => array(
-						'schema' => self::$field_schema,
-					),
 					'auth_callback' => function () {
 						return current_user_can( 'edit_posts' );
 					},
@@ -250,7 +270,7 @@ class Plugin {
 	}
 
 	/**
-	 * Filter the facebook image.
+	 * Filter the social image for Open Graph (Facebook, LinkedIn, etc.).
 	 *
 	 * @hook wpseo_opengraph_image
 	 * @param string $img The image URL.
@@ -265,7 +285,7 @@ class Plugin {
 		}
 		global $post;
 		$api = new API( $post->ID );
-		$art = $api->get( 'facebook' );
+		$art = $api->get( 'social' );
 		if ( false === $art ) {
 			return $img;
 		}
@@ -276,7 +296,7 @@ class Plugin {
 	}
 
 	/**
-	 * Filter the twitter image.
+	 * Filter the social image for Twitter/X.
 	 *
 	 * @hook wpseo_twitter_image
 	 * @param string $img The image URL.
@@ -291,7 +311,7 @@ class Plugin {
 		}
 		global $post;
 		$api = new API( $post->ID );
-		$art = $api->get( 'twitter' );
+		$art = $api->get( 'social' );
 		if ( false === $art ) {
 			return $img;
 		}

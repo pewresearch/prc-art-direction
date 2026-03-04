@@ -1,31 +1,21 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable max-len */
 /**
- * External Dependencies
- */
-import { useDebounce } from '@prc/hooks';
-
-/**
  * WordPress Dependencies
  */
 import {
 	useEffect,
-	useState,
 	useContext,
 	useMemo,
+	useCallback,
 	createContext,
 } from '@wordpress/element';
 import { useEntityProp, useResourcePermissions } from '@wordpress/core-data';
-import { dispatch, useSelect, useDispatch } from '@wordpress/data';
-
-/**
- * Internal Dependencies
- */
+import { dispatch, useSelect } from '@wordpress/data';
 
 const artDirectionContext = createContext();
 
 function shapeImg(img, size) {
-	// console.log('prc-platform/art-direction shapeImg::', img);
 	if (img.sizes[size]) {
 		return {
 			id: img.id,
@@ -45,45 +35,38 @@ function shapeImg(img, size) {
 /**
  * State logic that sets other state objects.
  * If the state/image being processed is A1 sized it will autopopulate all images.
- * If A2 then A3 and A4 will be acted upon
- * If Facebook then only Twitter will be acted upon
+ * If A2 then A3 and A4 will be acted upon.
  *
- * @param {WP Media Image Blob} imgData
- * @param {string}              size
+ * @param {Object} currentArtDirection The current art direction state.
+ * @param {Object} imgData             WordPress Media Object containing id, url, sizes, and caption.
+ * @param {string} size                The image size slot.
  * @return {Object} modified state object
  */
-function propagateImageChanges(imgData, size) {
-	const updates = {};
+function propagateImageChanges(currentArtDirection, imgData, size) {
+	const updates = { ...currentArtDirection };
 	if ('A1' === size) {
 		updates.A2 = shapeImg(imgData, 'A2');
 		updates.XL = shapeImg(imgData, 'XL');
-		updates.facebook = shapeImg(imgData, 'facebook');
-		updates.twitter = shapeImg(imgData, 'twitter');
+		updates.social = shapeImg(imgData, 'social');
 	}
 	if ('A1' === size || 'A2' === size) {
 		updates.A3 = shapeImg(imgData, 'A3');
 		updates.A4 = shapeImg(imgData, 'A4');
 	}
-	if ('facebook' === size) {
-		updates.twitter = shapeImg(imgData, 'twitter');
-	}
 	updates[size] = shapeImg(imgData, size);
 	return updates;
 }
 
-function propagateBorderedToggle(updates = {}, size) {
+function propagateBorderedToggle(artDirection, size) {
+	const updates = { ...artDirection };
 	const value = !updates[size].chartArt;
 	if ('A2' === size) {
-		updates.A2.chartArt = value;
-		updates.A3.chartArt = value;
-		updates.A4.chartArt = value;
+		updates.A2 = { ...updates.A2, chartArt: value };
+		updates.A3 = { ...updates.A3, chartArt: value };
+		updates.A4 = { ...updates.A4, chartArt: value };
 	} else {
-		updates[size].chartArt = value;
+		updates[size] = { ...updates[size], chartArt: value };
 	}
-	console.log(
-		'prc-platform/art-direction propagateBorderedToggle::',
-		updates
-	);
 	return updates;
 }
 
@@ -95,92 +78,53 @@ function updateFeatureImage(img = false) {
 }
 
 const useArtDirectionContext = () => {
-	const { postId, postType, testMeta } = useSelect((select) => {
+	const { postId, postType } = useSelect((select) => {
 		return {
 			postId: select('core/editor').getCurrentPostId(),
 			postType: select('core/editor').getCurrentPostType(),
-			testMeta: select('core/editor').getCurrentPostAttribute('meta'),
 		};
 	}, []);
-	const [meta, setMeta] = useEntityProp('postType', postType, 'meta', postId);
-	const { canDelete, isResolving } = useResourcePermissions(postType, postId);
+
+	// Use the REST field 'art_direction' directly via useEntityProp
+	const [artDirection, setArtDirection] = useEntityProp(
+		'postType',
+		postType,
+		'art_direction',
+		postId
+	);
+
+	const { isResolving } = useResourcePermissions(postType, postId);
 	const allowEditing = useMemo(() => {
-		console.log('ART CHECK Permissions Check:', isResolving, canDelete);
 		if (isResolving) {
 			return false;
 		}
 		return true;
-	}, [isResolving, canDelete]);
+	}, [isResolving]);
 
-	const [artDirection, setArtDirection] = useState(meta.artDirection || {});
-	const debouncedArtDirection = useDebounce(artDirection, 500);
-
-	/**
-	 * Handle saving data back to post.
-	 * This approach doesnt support cross collabration as well... but it works for now.
-	 */
+	// Sync featured image when A1 changes
 	useEffect(() => {
-		console.log(
-			'ART DIRECTION:',
-			meta,
-			testMeta,
-			debouncedArtDirection,
-			meta.artDirection,
-			artDirection,
-			allowEditing
-		);
-		if (!allowEditing || undefined === meta) {
-			console.log(
-				"ART DIRECTION UHOH: Can't edit or no meta",
-				allowEditing,
-				meta
-			);
-			return;
+		if (artDirection?.A1?.id) {
+			updateFeatureImage(artDirection.A1);
 		}
-		// If there is an A1 image, set it as the featured image
-		if (debouncedArtDirection.A1 && debouncedArtDirection.A1 !== false) {
-			updateFeatureImage(debouncedArtDirection.A1);
-			console.log('Featured Image: ', debouncedArtDirection.A1);
-		}
-		// Check if debouncedArtDirection is different from meta.artDirection, by going through each object and it's properties and making sure they are the same.
-		// console.log(
-		// 	'ART DIRECTION DIFF CHECK:',
-		// 	JSON.stringify(debouncedArtDirection),
-		// 	JSON.stringify(meta.artDirection)
-		// );
-		if (
-			JSON.stringify(debouncedArtDirection) !==
-			JSON.stringify(meta.artDirection)
-		) {
-			// console.clear();
-			// console.log('Art Direction Change Detected', {
-			// 	update: debouncedArtDirection,
-			// 	current: meta.artDirection,
-			// });
-		} else {
-			// console.log('No Art Direction Change Detected', {
-			// 	update: debouncedArtDirection,
-			// 	current: meta.artDirection,
-			// });
-			return;
-		}
-		// console.log('ART DIRECTION UPDATE: ', debouncedArtDirection, meta);
-		setMeta({
-			...meta,
-			artDirection: debouncedArtDirection,
-		});
-	}, [debouncedArtDirection, allowEditing, meta, setMeta]);
+	}, [artDirection?.A1?.id]);
 
 	const setImageSlot = (imgData, size) => {
-		const newArtDirection = propagateImageChanges(imgData, size);
-		setArtDirection({ ...artDirection, ...newArtDirection });
+		const currentArtDirection = artDirection || {};
+		const newArtDirection = propagateImageChanges(
+			currentArtDirection,
+			imgData,
+			size
+		);
+		setArtDirection(newArtDirection);
 	};
 
 	const toggleImageSlotBordered = (size) => {
-		let newArtDirection = { ...artDirection };
-		newArtDirection = propagateBorderedToggle(newArtDirection, size);
-		setMeta({ ...meta, artDirection: newArtDirection });
-		setArtDirection({ ...newArtDirection });
+		const currentArtDirection = artDirection || {};
+		const newArtDirection = propagateBorderedToggle(
+			currentArtDirection,
+			size
+		);
+		setArtDirection(newArtDirection);
 	};
 
 	const isImageSlotBordered = (size) => {
@@ -197,40 +141,33 @@ const useArtDirectionContext = () => {
 	};
 
 	const hasA1Image = useMemo(() => {
-		return !!artDirection.A1;
+		return !!artDirection?.A1;
 	}, [artDirection]);
 
 	const allSlotsTheSame = useMemo(() => {
-		const keys = Object.keys(debouncedArtDirection);
-		const first = debouncedArtDirection[keys[0]];
-		console.log('allSlotsTheSame', keys, first);
+		if (!artDirection) return true;
+		const keys = Object.keys(artDirection);
+		if (keys.length === 0) return true;
+		const first = artDirection[keys[0]];
+		if (!first) return true;
 		for (let i = 1; i < keys.length; i++) {
-			console.log(
-				'allSlotsTheSame...',
-				first,
-				debouncedArtDirection[keys[i]]
-			);
-			let strike = 0;
-			if (first.id !== debouncedArtDirection[keys[i]].id) {
-				strike += 1;
+			const current = artDirection[keys[i]];
+			if (!current) continue;
+			if (first.id !== current.id) {
+				return false;
 			}
-			if (first.chartArt !== debouncedArtDirection[keys[i]].chartArt) {
-				strike += 1;
-			}
-			if (strike > 0) {
-				console.log('allSlotsTheSame...', 'not all the same');
+			if (first.chartArt !== current.chartArt) {
 				return false;
 			}
 		}
-		// console.log('allSlotsTheSame...', 'all the same');
 		return true;
-	}, [debouncedArtDirection]);
+	}, [artDirection]);
 
 	return {
 		allowEditing,
 		postId,
 		postType,
-		artDirection: debouncedArtDirection,
+		artDirection: artDirection || {},
 		hasA1Image,
 		setImageSlot,
 		getImageSlot,
@@ -245,6 +182,7 @@ const useArtDirection = () => useContext(artDirectionContext);
 
 function ProvideArtDirection({ children }) {
 	const provider = useArtDirectionContext();
+
 	return (
 		<artDirectionContext.Provider value={provider}>
 			{children}
