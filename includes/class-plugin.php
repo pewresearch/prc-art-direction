@@ -160,6 +160,7 @@ class Plugin {
 		require_once plugin_dir_path( __DIR__ ) . '/includes/class-rest-api.php';
 		require_once plugin_dir_path( __DIR__ ) . '/includes/class-cli.php';
 		require_once plugin_dir_path( __DIR__ ) . '/includes/class-distributor.php';
+		require_once plugin_dir_path( __DIR__ ) . '/includes/class-media-sizes.php';
 		require_once plugin_dir_path( __DIR__ ) . '/includes/inspector-sidebar-panel/class-inspector-sidebar-panel.php';
 		require_once plugin_dir_path( __DIR__ ) . '/includes/core-post-featured-image/class-core-post-featured-image.php';
 	}
@@ -212,6 +213,7 @@ class Plugin {
 		new Inspector_Sidebar_Panel( $this->loader );
 		new Core_Post_Featured_Image( $this->loader );
 		new Distributor( $this->loader );
+		new Media_Sizes( $this->loader );
 	}
 
 	/**

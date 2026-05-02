@@ -78,7 +78,7 @@ class Inspector_Sidebar_Panel {
 	 */
 	public function enqueue_block_plugin_assets() {
 		$registered       = $this->register_block_plugin_assets();
-		$screen_post_type = \PRC\Platform\get_wp_admin_current_post_type();
+		$screen_post_type = \PRC\BlockUtils\get_wp_admin_current_post_type();
 		if ( ! $screen_post_type || ! in_array( $screen_post_type, Plugin::get_enabled_post_types(), true ) ) {
 			return;
 		}

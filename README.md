@@ -10,7 +10,7 @@ It sits between the block editor and the media library on the way in, and betwee
 
 ### Dependencies
 
-- **Upstream**: `prc-platform-core` (required), `prc-block-utils` (for class name helpers), Yoast SEO (optional — social image filters activate only when present), 10up Distributor (optional — ID remapping activates only when present)
+- **Upstream**: `prc-platform-core` (required), `prc/block-utils` Composer package / `PRC\BlockUtils\classNames` (for class name helpers), Yoast SEO (optional — social image filters activate only when present), 10up Distributor (optional — ID remapping activates only when present)
 - **Downstream**: Any block or theme that reads `art_direction` from the REST API or calls `\PRC\Platform\Art_Direction\get()`; the `core/post-featured-image` block renderer is modified directly by this plugin
 
 ## Local Development Setup
@@ -33,17 +33,17 @@ npm run build:core-featured-image -w @prc/art-direction
 
 ### Running Tests
 
-The test suite uses Playwright and `@wordpress/e2e-test-utils-playwright`. Tests require a running WordPress environment.
+The test suite uses Playwright and `@wordpress/e2e-test-utils-playwright`. wp-env and Playwright are centralized at the repo root, and the specs for this plugin live at `tests/prc-art-direction/`.
 
 ```bash
-# Start the test environment (wp-env, local to this plugin)
-npm run test:env:start -w @prc/art-direction
+# From the monorepo root
+npm run env:start
 
-# Run Playwright tests
-npm run test -w @prc/art-direction
+# Run only this plugin's specs
+npm test -- tests/prc-art-direction/
 
 # Tear down
-npm run test:env:stop -w @prc/art-direction
+npm run env:stop
 ```
 
 ## Architecture
@@ -68,43 +68,43 @@ The plugin is organized around a PHP `API` class that reads the `artDirection` p
 
 ### Key Files
 
-| Path | Purpose |
-|------|---------|
-| `prc-art-direction.php` | Plugin entry point; defines constants, wires activation hooks, boots `Plugin` |
-| `includes/class-plugin.php` | Core class; registers post meta, post type support, Yoast SEO image filters, and instantiates all subsystems |
-| `includes/class-api.php` | Primary PHP API; instantiate with a post ID and call `->get($slot)` to retrieve art direction data for a given slot or all slots |
-| `includes/utils.php` | Global helper `\PRC\Platform\Art_Direction\get( $post_id, $size )` — thin wrapper around `API` |
-| `includes/class-rest-api.php` | Registers the `art_direction` REST field on all enabled post types; handles sanitization and legacy key migration on read/write |
-| `includes/class-distributor.php` | 10up Distributor integration; remaps attachment IDs and URLs for each slot when content is pushed to another site |
-| `includes/class-cli.php` | WP-CLI command for bulk-migrating legacy `facebook`/`twitter` keys to the unified `social` key |
-| `includes/inspector-sidebar-panel/src/index.jsx` | Editor entry point; replaces `editor.PostFeaturedImage` with the Art Direction panel; hooks into `prc-platform.attachments-panel` and `prc-platform.seo.ui.social` |
-| `includes/inspector-sidebar-panel/src/inspector-sidebar.jsx` | The sidebar panel component rendering all image slots |
-| `includes/inspector-sidebar-panel/src/pre-publish-panel.jsx` | Pre-publish checklist panel for reviewing art direction before publish |
+| Path                                                                   | Purpose                                                                                                                                                                          |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `prc-art-direction.php`                                                | Plugin entry point; defines constants, wires activation hooks, boots `Plugin`                                                                                                    |
+| `includes/class-plugin.php`                                            | Core class; registers post meta, post type support, Yoast SEO image filters, and instantiates all subsystems                                                                     |
+| `includes/class-api.php`                                               | Primary PHP API; instantiate with a post ID and call `->get($slot)` to retrieve art direction data for a given slot or all slots                                                 |
+| `includes/utils.php`                                                   | Global helper `\PRC\Platform\Art_Direction\get( $post_id, $size )` — thin wrapper around `API`                                                                                   |
+| `includes/class-rest-api.php`                                          | Registers the `art_direction` REST field on all enabled post types; handles sanitization and legacy key migration on read/write                                                  |
+| `includes/class-distributor.php`                                       | 10up Distributor integration; remaps attachment IDs and URLs for each slot when content is pushed to another site                                                                |
+| `includes/class-cli.php`                                               | WP-CLI command for bulk-migrating legacy `facebook`/`twitter` keys to the unified `social` key                                                                                   |
+| `includes/inspector-sidebar-panel/src/index.jsx`                       | Editor entry point; replaces `editor.PostFeaturedImage` with the Art Direction panel; hooks into `prc-platform.attachments-panel` and `prc-platform.seo.ui.social`               |
+| `includes/inspector-sidebar-panel/src/inspector-sidebar.jsx`           | The sidebar panel component rendering all image slots                                                                                                                            |
+| `includes/inspector-sidebar-panel/src/pre-publish-panel.jsx`           | Pre-publish checklist panel for reviewing art direction before publish                                                                                                           |
 | `includes/core-post-featured-image/class-core-post-featured-image.php` | Modifies `core/post-featured-image` block at render time; adds `imageSize` and `isChartArt` attributes; outputs a responsive `<picture>` element using HIDPI and mobile variants |
-| `tests/editor-panel.spec.ts` | Playwright tests for editor panel rendering and asset enqueueing |
-| `tests/rest-api.spec.ts` | Playwright tests for REST field read/write, sanitization, legacy migration, and featured image fallback |
-| `tests/frontend-output.spec.ts` | Playwright tests for frontend block rendering |
+| `tests/editor-panel.spec.ts`                                           | Playwright tests for editor panel rendering and asset enqueueing                                                                                                                 |
+| `tests/rest-api.spec.ts`                                               | Playwright tests for REST field read/write, sanitization, legacy migration, and featured image fallback                                                                          |
+| `tests/frontend-output.spec.ts`                                        | Playwright tests for frontend block rendering                                                                                                                                    |
 
 ## Hooks & Filters
 
 ### PHP Actions & Filters
 
-| Hook | Type | Description |
-|------|------|-------------|
-| `prc_platform__art_direction_enabled_post_types` | Filter | Append post type slugs to the list of types that support art direction. Prefer `add_post_type_support( $type, 'prc-art-direction' )` for new code. |
-| `wpseo_opengraph_image` | Filter (consumed) | Replaced with the `social` slot URL when one is set |
-| `wpseo_twitter_image` | Filter (consumed) | Replaced with the `social` slot URL when one is set |
-| `block_type_metadata` | Filter (consumed) | Adds `imageSize` (default `A1`) and `isChartArt` (default `false`) attributes to `core/post-featured-image` |
-| `render_block` | Filter (consumed) | Intercepts `core/post-featured-image` rendering and replaces output with a responsive `<picture>` element built from art direction data |
-| `prc_api_endpoints` | Filter (consumed) | Registers the custom `GET /prc-api/v3/art-direction/get/{post_id}` endpoint |
+| Hook                                             | Type              | Description                                                                                                                                        |
+| ------------------------------------------------ | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `prc_platform__art_direction_enabled_post_types` | Filter            | Append post type slugs to the list of types that support art direction. Prefer `add_post_type_support( $type, 'prc-art-direction' )` for new code. |
+| `wpseo_opengraph_image`                          | Filter (consumed) | Replaced with the `social` slot URL when one is set                                                                                                |
+| `wpseo_twitter_image`                            | Filter (consumed) | Replaced with the `social` slot URL when one is set                                                                                                |
+| `block_type_metadata`                            | Filter (consumed) | Adds `imageSize` (default `A1`) and `isChartArt` (default `false`) attributes to `core/post-featured-image`                                        |
+| `render_block`                                   | Filter (consumed) | Intercepts `core/post-featured-image` rendering and replaces output with a responsive `<picture>` element built from art direction data            |
+| `rest_api_init`                                  | Action (consumed) | Registers the custom `GET /prc-api/v3/art-direction/get/{post_id}` endpoint directly via `register_rest_route()`                                   |
 
 ### JavaScript Filters (`@wordpress/hooks`)
 
-| Filter | Description |
-|--------|-------------|
-| `editor.PostFeaturedImage` | Replaces the default Featured Image panel in the block editor with the Art Direction multi-slot panel |
-| `prc-platform.attachments-panel` | Injects Art Direction options into the platform Attachments sidebar panel |
-| `prc-platform.seo.ui.social` | Injects the `social` slot picker into the platform SEO panel's social section |
+| Filter                           | Description                                                                                           |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `editor.PostFeaturedImage`       | Replaces the default Featured Image panel in the block editor with the Art Direction multi-slot panel |
+| `prc-platform.attachments-panel` | Injects Art Direction options into the platform Attachments sidebar panel                             |
+| `prc-platform.seo.ui.social`     | Injects the `social` slot picker into the platform SEO panel's social section                         |
 
 ## REST API
 

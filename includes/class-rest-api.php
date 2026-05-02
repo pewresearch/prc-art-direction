@@ -23,7 +23,7 @@ class Rest_API {
 	 */
 	public function __construct( $loader ) {
 		$loader->add_action( 'rest_api_init', $this, 'register_art_direction_rest_field' );
-		$loader->add_filter( 'prc_api_endpoints', $this, 'register_endpoint' );
+		$loader->add_action( 'rest_api_init', $this, 'register_endpoint' );
 	}
 
 	/**
@@ -47,25 +47,21 @@ class Rest_API {
 	}
 
 	/**
-	 * Register the art direction endpoint.
-	 *
-	 * @hook prc_api_endpoints
-	 * @param mixed $endpoints The endpoints.
-	 * @return array The endpoints.
+	 * @hook rest_api_init
 	 */
-	public function register_endpoint( $endpoints ) {
-		array_push(
-			$endpoints,
+	public function register_endpoint() {
+		register_rest_route(
+			'prc-api/v3',
+			'/art-direction/get/(?P<post_id>\d+)',
 			array(
-				'route'               => '/art-direction/get/(?P<post_id>\d+)',
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'restfully_get_art' ),
 				'permission_callback' => function () {
 					return true;
 				},
+				'args'                => array(),
 			)
 		);
-		return $endpoints;
 	}
 
 	/**
