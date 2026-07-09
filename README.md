@@ -18,7 +18,7 @@ It sits between the block editor and the media library on the way in, and betwee
 ### Prerequisites
 
 - Node.js 22+, npm 10.9+
-- WordPress Playground (`npm run playground:start` from repo root)
+- WordPress Playground (``npm run vip:start` from repo root)
 
 ### Running Locally
 
@@ -37,13 +37,13 @@ The test suite uses Playwright and `@wordpress/e2e-test-utils-playwright`. wp-en
 
 ```bash
 # From the monorepo root
-npm run env:start
+npm run vip:start
 
 # Run only this plugin's specs
 npm test -- tests/prc-art-direction/
 
 # Tear down
-npm run env:stop
+npm run vip:stop
 ```
 
 ## Architecture

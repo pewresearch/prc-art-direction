@@ -20,4 +20,4 @@ built modules 6.68 KiB (javascript) 2.76 KiB (css/mini-extract) [built]
   ./src/index.js + 10 modules 6.68 KiB [not cacheable] [built] [code generated]
   css ../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/style.scss 2.16 KiB [built] [code generated]
   css ../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/editor.scss 609 bytes [built] [code generated]
-webpack 5.106.2 compiled successfully in 2122 ms
+webpack 5.106.2 compiled successfully in 2307 ms
