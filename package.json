@@ -1,6 +1,6 @@
 {
 	"name": "@prc/art-direction",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Provides a module for PRC Platform that allows editors to select multiple images and apply them to the post, then Story Item blocks can use the various images in different layout contexts.",
 	"scripts": {
 		"build:inspector-panel": "wp-scripts build --source-path=./includes/inspector-sidebar-panel/src --output-path=./includes/inspector-sidebar-panel/build",

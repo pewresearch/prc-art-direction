@@ -72,6 +72,7 @@ class Core_Post_Featured_Image {
 		if ( null !== $loader ) {
 			$loader->add_action( 'init', $this, 'register_assets' );
 			$loader->add_action( 'enqueue_block_assets', $this, 'register_style' );
+			$loader->add_action( 'enqueue_block_assets', $this, 'register_editor_style' );
 			$loader->add_action( 'enqueue_block_editor_assets', $this, 'register_editor_assets' );
 			$loader->add_filter( 'block_type_metadata', $this, 'add_attributes', 100, 1 );
 			$loader->add_filter( 'render_block', $this, 'render', 100, 3 );
@@ -122,6 +123,19 @@ class Core_Post_Featured_Image {
 	 */
 	public function register_editor_assets() {
 		wp_enqueue_script( 'prc-art-direction-core-post-featured-image' );
+	}
+
+	/**
+	 * Register editor style for the iframed canvas.
+	 *
+	 * @hook enqueue_block_assets
+	 * @return void
+	 */
+	public function register_editor_style() {
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		wp_enqueue_style( 'prc-art-direction-core-post-featured-image__editor' );
 	}
 
