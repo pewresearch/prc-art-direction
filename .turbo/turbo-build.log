@@ -1,9 +1,9 @@
 
-> @prc/art-direction@1.0.1 build
+> @prc/art-direction@1.0.0 build
 > npm run build:inspector-panel && npm run build:core-featured-image
 
 
-> @prc/art-direction@1.0.1 build:inspector-panel
+> @prc/art-direction@1.0.0 build:inspector-panel
 > wp-scripts build --source-path=./includes/inspector-sidebar-panel/src --output-path=./includes/inspector-sidebar-panel/build
 
 assets by status 7.35 KiB [compared for emit]
@@ -18,9 +18,9 @@ runtime modules 3.07 KiB 5 modules
 built modules 16 KiB (javascript) 358 bytes (css/mini-extract) [built]
   ./includes/inspector-sidebar-panel/src/index.jsx + 19 modules 16 KiB [not cacheable] [built] [code generated]
   css ../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./includes/inspector-sidebar-panel/src/style.scss 358 bytes [built] [code generated]
-webpack 5.106.2 compiled successfully in 4169 ms
+webpack 5.106.2 compiled successfully in 1577 ms
 
-> @prc/art-direction@1.0.1 build:core-featured-image
+> @prc/art-direction@1.0.0 build:core-featured-image
 > wp-scripts build --source-path=./includes/core-post-featured-image/src --output-path=./includes/core-post-featured-image/build
 
 assets by status 9.02 KiB [emitted]
@@ -41,4 +41,4 @@ built modules 6.68 KiB (javascript) 2.76 KiB (css/mini-extract) [built]
   ./includes/core-post-featured-image/src/index.js + 10 modules 6.68 KiB [not cacheable] [built] [code generated]
   css ../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./includes/core-post-featured-image/src/style.scss 2.16 KiB [built] [code generated]
   css ../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./includes/core-post-featured-image/src/editor.scss 609 bytes [built] [code generated]
-webpack 5.106.2 compiled successfully in 2239 ms
+webpack 5.106.2 compiled successfully in 998 ms

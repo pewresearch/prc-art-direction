@@ -33,14 +33,14 @@ npm run build:core-featured-image -w @prc/art-direction
 
 ### Running Tests
 
-The test suite uses Playwright and `@wordpress/e2e-test-utils-playwright`. wp-env and Playwright are centralized at the repo root, and the specs for this plugin live at `tests/prc-art-direction/`.
+The test suite uses Playwright and `@wordpress/e2e-test-utils-playwright`. wp-env and Playwright are centralized at the repo root, and the specs for this plugin live at `tests/prc-art-direction/e2e/`.
 
 ```bash
 # From the monorepo root
 npm run vip:start
 
 # Run only this plugin's specs
-npm test -- tests/prc-art-direction/
+npm test -- tests/prc-art-direction/e2e/
 
 # Tear down
 npm run vip:stop
@@ -81,9 +81,9 @@ The plugin is organized around a PHP `API` class that reads the `artDirection` p
 | `includes/inspector-sidebar-panel/src/inspector-sidebar.jsx`           | The sidebar panel component rendering all image slots                                                                                                                            |
 | `includes/inspector-sidebar-panel/src/pre-publish-panel.jsx`           | Pre-publish checklist panel for reviewing art direction before publish                                                                                                           |
 | `includes/core-post-featured-image/class-core-post-featured-image.php` | Modifies `core/post-featured-image` block at render time; adds `imageSize` and `isChartArt` attributes; outputs a responsive `<picture>` element using HIDPI and mobile variants |
-| `tests/editor-panel.spec.ts`                                           | Playwright tests for editor panel rendering and asset enqueueing                                                                                                                 |
-| `tests/rest-api.spec.ts`                                               | Playwright tests for REST field read/write, sanitization, legacy migration, and featured image fallback                                                                          |
-| `tests/frontend-output.spec.ts`                                        | Playwright tests for frontend block rendering                                                                                                                                    |
+| `tests/prc-art-direction/e2e/editor-panel.spec.ts`                                           | Playwright tests for editor panel rendering and asset enqueueing                                                                                                                 |
+| `tests/prc-art-direction/e2e/rest-api.spec.ts`                                               | Playwright tests for REST field read/write, sanitization, legacy migration, and featured image fallback                                                                          |
+| `tests/prc-art-direction/e2e/frontend-output.spec.ts`                                        | Playwright tests for frontend block rendering                                                                                                                                    |
 
 ## Hooks & Filters
 
