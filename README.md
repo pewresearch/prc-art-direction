@@ -1,5 +1,7 @@
 # PRC Art Direction
 
+> Canonical docs: [docs/plugins/prc-art-direction/](../../docs/plugins/prc-art-direction/)
+
 A multi-slot featured image system for the PRC Platform that replaces WordPress's default featured image with context-aware art direction.
 
 ## Overview
@@ -164,5 +166,5 @@ wp prc art-direction migrate-social --post-type=post --dry-run=false
 
 ## Related Docs
 
-- [DEVELOPMENT_GUIDELINES.md](../../docs/DEVELOPMENT_GUIDELINES.md)
+- [development-guidelines.md](../../docs/development-guidelines.md)
 - [prc-platform-core](../prc-platform-core/README.md)
