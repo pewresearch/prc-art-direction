@@ -18,7 +18,7 @@ runtime modules 3.07 KiB 5 modules
 built modules 16 KiB (javascript) 358 bytes (css/mini-extract) [1m[33m[built][39m[22m
   [1m./includes/inspector-sidebar-panel/src/index.jsx + 19 modules[39m[22m 16 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
   css ../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]![1m./includes/inspector-sidebar-panel/src/style.scss[39m[22m 358 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 1369 ms
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 1357 ms
 
 > @prc/art-direction@1.0.1 build:core-featured-image
 > wp-scripts build --source-path=./includes/core-post-featured-image/src --output-path=./includes/core-post-featured-image/build
@@ -41,4 +41,4 @@ built modules 6.68 KiB (javascript) 2.76 KiB (css/mini-extract) [1m[33m[built]
   [1m./includes/core-post-featured-image/src/index.js + 10 modules[39m[22m 6.68 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
   css ../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]![1m./includes/core-post-featured-image/src/style.scss[39m[22m 2.16 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
   css ../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]![1m./includes/core-post-featured-image/src/editor.scss[39m[22m 609 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 1932 ms
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 950 ms
