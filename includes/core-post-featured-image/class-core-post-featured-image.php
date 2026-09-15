@@ -223,7 +223,11 @@ class Core_Post_Featured_Image {
 			return $block_content;
 		}
 
-		// get img url from $postId at the 'art-direction/get' endpoint
+		if ( empty( $wp_block->context['postId'] ) ) {
+			return $block_content;
+		}
+
+		// Get img url from $postId at the art-direction/get endpoint.
 		$post_id   = $wp_block->context['postId'];
 		$url       = get_permalink( $post_id );
 		$img_size  = array_key_exists( 'imageSize', $block['attrs'] ) ? $block['attrs']['imageSize'] : 'A1';
