@@ -261,7 +261,7 @@ class Core_Post_Featured_Image {
 			),
 		);
 
-		$image_class = \PRC\BlockUtils\classNames(
+		$image_class = \PRC\Primitives\BlockUtils\classNames(
 			'image',
 			'jetpack-lazy-image',
 			array(

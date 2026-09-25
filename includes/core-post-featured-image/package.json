@@ -1,6 +1,6 @@
 {
 	"name": "@pewresearch/art-direction-core-post-featured-image",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"author": "PRC",
 	"license": "GPL-2.0-or-later",
 	"description": "A takeover of the core/post-featured-image block to provide art direction.",
