@@ -9,20 +9,13 @@ import domReady from '@wordpress/dom-ready';
  */
 import './style.scss';
 import InspectorSidebar from './inspector-sidebar';
-import PrePublishPanel from './pre-publish-panel';
-import renderPanelHook, {socialPanelHook} from './genera-panel-hook';
+import renderPanelHook, { socialPanelHook } from './genera-panel-hook';
 
 function renderArtDirectionPlugin() {
-	return () => (
-		<>
-			<InspectorSidebar />
-			<PrePublishPanel />
-		</>
-	);
+	return () => <InspectorSidebar />;
 }
 
 domReady(() => {
-	console.log('@prc/art-direction init');
 	// Replace the "Featured Image" area with our "Art Direction" panel.
 	addFilter(
 		'editor.PostFeaturedImage',
@@ -39,8 +32,6 @@ domReady(() => {
 	addFilter(
 		'prc-platform.seo.ui.social',
 		'prc-platform/art-direction',
-		socialPanelHook,
+		socialPanelHook
 	);
 });
-
-
