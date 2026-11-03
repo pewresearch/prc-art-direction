@@ -47,6 +47,8 @@ class Rest_API {
 	}
 
 	/**
+	 * Register the art direction read endpoint.
+	 *
 	 * @hook rest_api_init
 	 */
 	public function register_endpoint() {
@@ -56,12 +58,32 @@ class Rest_API {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'restfully_get_art' ),
-				'permission_callback' => function () {
-					return true;
-				},
-				'args'                => array(),
+				'permission_callback' => array( $this, 'can_read_art' ),
+				'args'                => array(
+					'post_id' => array(
+						'required'          => true,
+						'sanitize_callback' => 'absint',
+					),
+				),
 			)
 		);
+	}
+
+	/**
+	 * Allow reads for publicly viewable posts, otherwise require read_post.
+	 *
+	 * @param \WP_REST_Request $request The request.
+	 * @return bool
+	 */
+	public function can_read_art( WP_REST_Request $request ) {
+		$post = get_post( $request->get_param( 'post_id' ) );
+		if ( ! $post ) {
+			return false;
+		}
+		if ( is_post_publicly_viewable( $post ) ) {
+			return true;
+		}
+		return current_user_can( 'read_post', $post->ID );
 	}
 
 	/**

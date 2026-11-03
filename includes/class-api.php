@@ -4,6 +4,7 @@
  *
  * @package PRC\Platform\Art_Direction
  */
+
 namespace PRC\Platform\Art_Direction;
 
 /**
@@ -91,7 +92,7 @@ class API {
 	 * @return array
 	 */
 	private function get_fallback_art() {
-		$post_thumbnail_id = get_post_meta( $this->post_id, '_thumbnail_id', true );
+		$post_thumbnail_id = (int) get_post_meta( $this->post_id, '_thumbnail_id', true );
 		if ( ! $post_thumbnail_id ) {
 			return false;
 		}
